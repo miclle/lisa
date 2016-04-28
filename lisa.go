@@ -1,46 +1,74 @@
 package main
 
 import (
-	"log"
+	"os"
 
-	"github.com/fsnotify/fsnotify"
+	"github.com/codegangsta/cli"
+	"github.com/miclle/lisa/action"
+	"github.com/miclle/lisa/msg"
 )
 
-// Watcher func
-func Watcher(path string) {
-	watcher, err := fsnotify.NewWatcher()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer watcher.Close()
+var version = "0.0.1-dev"
 
-	done := make(chan bool)
-	go func() {
-		for {
-			select {
-			case event := <-watcher.Events:
+const usage = `A file watcher cli.
 
-				log.Println("event:", event)
+Usage: lisa COMMAND [ARGS]
 
-				if event.Op&fsnotify.Write == fsnotify.Write {
-					log.Println("modified file:", event.Name)
-				}
+All commands can be run with -h (or --help) for more information.
 
-			case err := <-watcher.Errors:
-				log.Println("error:", err)
-			}
-		}
-	}()
+More info https://github.com/miclle/lisa
+`
 
-	err = watcher.Add(path)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	<-done
+var authors = []cli.Author{
+	cli.Author{Name: "Miclle", Email: "miclle.zheng@gmail.com"},
+	cli.Author{Name: "Lisa", Email: "lisa_smiles@sina.com"},
 }
 
 func main() {
-	Watcher("./")
+	app := cli.NewApp()
+	app.Name = "lisa"
+	app.Usage = usage
+	app.Version = version
+	app.Authors = authors
+
+	app.CommandNotFound = func(c *cli.Context, command string) {
+		msg.ExitCode(99)
+		msg.Die("Command %s does not exist.", command)
+	}
+
+	app.Before = startup
+
+	app.Commands = commands()
+
+	if err := app.Run(os.Args); err != nil {
+		msg.Err(err.Error())
+		os.Exit(1)
+	}
+
+	// If there was a Error message exit non-zero.
+	if msg.HasErrored() {
+		m := msg.Color(msg.Red, "An Error has occurred")
+		msg.Msg(m)
+		os.Exit(2)
+	}
+}
+
+func startup(c *cli.Context) error {
+	// TODO
+	return nil
+}
+
+func commands() []cli.Command {
+	return []cli.Command{
+		{
+			Name:        "watch",
+			ShortName:   "w",
+			Usage:       "Start the lisa watcher",
+			Description: "Start the lisa watcher",
+			Action: func(c *cli.Context) {
+				msg.Info("Start watch path: ./")
+				action.Watcher("./")
+			},
+		},
+	}
 }
