@@ -61,6 +61,15 @@ func startup(c *cli.Context) error {
 func commands() []cli.Command {
 	return []cli.Command{
 		{
+			Name:        "server",
+			ShortName:   "s",
+			Usage:       "Serving Static Files with HTTP",
+			Description: "Serving Static Files with HTTP",
+			Action: func(c *cli.Context) {
+				action.Server(":8080", "./")
+			},
+		},
+		{
 			Name:        "watch",
 			ShortName:   "w",
 			Usage:       "Start the lisa watcher",
