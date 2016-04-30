@@ -7,16 +7,18 @@ import (
 	"path/filepath"
 
 	"github.com/miclle/lisa/msg"
+	"github.com/skratchdot/open-golang/open"
 )
 
 type server struct {
-	addr, dir, absolute string
+	bind, addr, dir, absolute string
 }
 
 // Server : Serving Static Files with HTTP
 func Server(addr, dir string) {
 	s := &server{
-		addr: addr,
+		bind: "0.0.0.0",
+		addr: ":" + addr,
 		dir:  dir,
 	}
 
@@ -29,8 +31,14 @@ func Server(addr, dir string) {
 
 	http.HandleFunc("/", s.handleFunc)
 
-	msg.Info(fmt.Sprintf("Serving HTTP on 0.0.0.0 port %s ...", addr))
-	if err := http.ListenAndServe(addr, nil); err != nil {
+	msg.Info(fmt.Sprintf("Serving HTTP on %s port %s ...", s.bind, s.addr))
+
+	// open URI using the OS's default browser
+	if err := open.Run(fmt.Sprintf("http://%s%s", s.bind, s.addr)); err != nil {
+		msg.Err(err.Error())
+	}
+
+	if err := http.ListenAndServe(s.addr, nil); err != nil {
 		panic(err)
 	}
 }
