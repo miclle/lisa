@@ -16,9 +16,9 @@ type server struct {
 }
 
 // Server : Serving Static Files with HTTP
-func Server(port int, dir string) {
+func Server(port int, bind, dir string) {
 	s := &server{
-		bind: "0.0.0.0",
+		bind: bind,
 		port: port,
 		dir:  dir,
 	}
@@ -44,7 +44,7 @@ func Server(port int, dir string) {
 		msg.Err(err.Error())
 	}
 
-	addr := fmt.Sprintf(":%d", s.port)
+	addr := fmt.Sprintf("%s:%d", s.bind, s.port)
 	if err := http.ListenAndServe(addr, nil); err != nil {
 		msg.Err(err.Error())
 		return

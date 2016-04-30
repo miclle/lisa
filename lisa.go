@@ -65,8 +65,25 @@ func commands() []cli.Command {
 			ShortName:   "s",
 			Usage:       "Serving Static Files with HTTP",
 			Description: "Serving Static Files with HTTP",
+			Flags: []cli.Flag{
+				cli.IntFlag{
+					Name:  "port, p",
+					Value: 8080,
+					Usage: "Serving Static Files with HTTP used port.",
+				},
+				cli.StringFlag{
+					Name:  "dir, d",
+					Value: "./",
+					Usage: "Serving Static Files with HTTP in directory.",
+				},
+				cli.StringFlag{
+					Name:  "bind, b",
+					Value: "0.0.0.0",
+					Usage: "Serving Static Files with HTTP bind address.",
+				},
+			},
 			Action: func(c *cli.Context) {
-				action.Server(8080, "")
+				action.Server(c.Int("port"), c.String("bind"), c.String("dir"))
 			},
 		},
 		{
