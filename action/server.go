@@ -2,7 +2,6 @@ package action
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -10,35 +9,52 @@ import (
 	"github.com/miclle/lisa/msg"
 )
 
+type server struct {
+	addr, dir, absolute string
+}
+
 // Server : Serving Static Files with HTTP
 func Server(addr, dir string) {
+	s := &server{
+		addr: addr,
+		dir:  dir,
+	}
+
+	var err error
+	s.absolute, err = filepath.Abs(dir)
+
+	if err != nil {
+		msg.Err(err.Error())
+	}
+
+	http.HandleFunc("/", s.handleFunc)
 
 	msg.Info(fmt.Sprintf("Serving HTTP on 0.0.0.0 port %s ...", addr))
-
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-
-		log.Print(os.Args[0])
-
-		dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if _, err = os.Stat(dir + r.URL.Path); err != nil {
-			// Return a 404 if the template doesn't exist
-			if os.IsNotExist(err) {
-				msg.Err(err.Error())
-				http.NotFound(w, r)
-				return
-			}
-			msg.Err(err.Error())
-		}
-
-		msg.Info(fmt.Sprintf("%s\t%s\t%s\t%s", r.RemoteAddr, r.Method, r.URL.Path, r.URL.RawQuery))
-		http.ServeFile(w, r, r.URL.Path[1:])
-	})
-
 	if err := http.ListenAndServe(addr, nil); err != nil {
 		panic(err)
 	}
+}
+
+func (s *server) handleFunc(w http.ResponseWriter, r *http.Request) {
+	dir := s.absolute + r.URL.Path
+
+	if _, err := os.Stat(dir); err != nil {
+
+		if os.IsNotExist(err) {
+			msg.Err(s.requestInfo(r, 404))
+			http.NotFound(w, r)
+			return
+		}
+
+		msg.Err(s.requestInfo(r, 500))
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	msg.Info(s.requestInfo(r, 200))
+	http.ServeFile(w, r, dir)
+}
+
+func (s *server) requestInfo(r *http.Request, code int) string {
+	return fmt.Sprintf("%s\t%s\t%d\t%s\t%s", r.RemoteAddr, r.Method, code, r.URL.Path, r.URL.RawQuery)
 }
