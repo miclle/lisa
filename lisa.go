@@ -66,7 +66,7 @@ func commands() []cli.Command {
 			Usage:       "Serving Static Files with HTTP",
 			Description: "Serving Static Files with HTTP",
 			Action: func(c *cli.Context) {
-				action.Server(":8080", "./")
+				action.Server(8080, "")
 			},
 		},
 		{

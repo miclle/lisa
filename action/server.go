@@ -11,15 +11,20 @@ import (
 )
 
 type server struct {
-	bind, addr, dir, absolute string
+	port                int
+	bind, dir, absolute string
 }
 
 // Server : Serving Static Files with HTTP
-func Server(addr, dir string) {
+func Server(port int, dir string) {
 	s := &server{
 		bind: "0.0.0.0",
-		addr: ":" + addr,
+		port: port,
 		dir:  dir,
+	}
+
+	if s.port == 0 {
+		s.port = 8080
 	}
 
 	var err error
@@ -27,19 +32,22 @@ func Server(addr, dir string) {
 
 	if err != nil {
 		msg.Err(err.Error())
+		return
 	}
 
 	http.HandleFunc("/", s.handleFunc)
 
-	msg.Info(fmt.Sprintf("Serving HTTP on %s port %s ...", s.bind, s.addr))
+	msg.Info(fmt.Sprintf("Serving HTTP on %s port %d ...", s.bind, s.port))
 
 	// open URI using the OS's default browser
-	if err := open.Run(fmt.Sprintf("http://%s%s", s.bind, s.addr)); err != nil {
+	if err := open.Run(fmt.Sprintf("http://%s:%d", s.bind, s.port)); err != nil {
 		msg.Err(err.Error())
 	}
 
-	if err := http.ListenAndServe(s.addr, nil); err != nil {
-		panic(err)
+	addr := fmt.Sprintf(":%d", s.port)
+	if err := http.ListenAndServe(addr, nil); err != nil {
+		msg.Err(err.Error())
+		return
 	}
 }
 
