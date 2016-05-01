@@ -37,7 +37,7 @@ func Server(port int, bind, dir string) {
 
 	http.HandleFunc("/", s.handleFunc)
 
-	msg.Info(fmt.Sprintf("Serving HTTP on %s port %d ...", s.bind, s.port))
+	msg.Info("Serving HTTP on %s port %d ...", s.bind, s.port)
 
 	// open URI using the OS's default browser
 	if err := open.Run(fmt.Sprintf("http://%s:%d", s.bind, s.port)); err != nil {
