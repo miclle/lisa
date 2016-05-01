@@ -7,7 +7,7 @@ import (
 )
 
 // Watcher func
-func Watcher(dir string) {
+func Watcher(command, dir string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Fatal(err)

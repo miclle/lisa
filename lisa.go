@@ -93,13 +93,18 @@ func commands() []cli.Command {
 			Description: "Start the lisa watcher",
 			Flags: []cli.Flag{
 				cli.StringFlag{
+					Name:  "command, c",
+					Value: "",
+					Usage: "Execute the command when the directory files modified.",
+				},
+				cli.StringFlag{
 					Name:  "dir, d",
 					Value: "./",
 					Usage: "Watching the directory.",
 				},
 			},
 			Action: func(c *cli.Context) {
-				action.Watcher(c.String("dir"))
+				action.Watcher(c.String("command"), c.String("dir"))
 			},
 		},
 	}
