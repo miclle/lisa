@@ -7,7 +7,7 @@ import (
 )
 
 // Watcher func
-func Watcher(path string) {
+func Watcher(dir string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Fatal(err)
@@ -32,7 +32,7 @@ func Watcher(path string) {
 		}
 	}()
 
-	err = watcher.Add(path)
+	err = watcher.Add(dir)
 
 	if err != nil {
 		log.Fatal(err)

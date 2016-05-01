@@ -91,9 +91,15 @@ func commands() []cli.Command {
 			ShortName:   "w",
 			Usage:       "Start the lisa watcher",
 			Description: "Start the lisa watcher",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "dir, d",
+					Value: "./",
+					Usage: "Watching the directory.",
+				},
+			},
 			Action: func(c *cli.Context) {
-				msg.Info("Start watch path: ./")
-				action.Watcher("./")
+				action.Watcher(c.String("dir"))
 			},
 		},
 	}
