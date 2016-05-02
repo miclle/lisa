@@ -32,17 +32,25 @@ func Watcher(name, command string) {
 // RecursiveWatcher struct
 type RecursiveWatcher struct {
 	*fsnotify.Watcher
+	*Walker
 	Command string
 }
 
 // NewRecursiveWatcher return a recursive watcher
 func NewRecursiveWatcher(name, command string) (*RecursiveWatcher, error) {
+	rw := &RecursiveWatcher{
+		Command: command,
+		Walker: &Walker{
+			IgnorePrefix: ".",
+		},
+	}
+
 	folders := []string{}
 
 	if fi, err := os.Stat(name); err != nil {
 		msg.Err("error: %s", err.Error())
 	} else if fi.IsDir() {
-		folders = Subfolders(name)
+		folders = rw.Subfolders(name)
 	} else {
 		folders = append(folders, name)
 	}
@@ -56,10 +64,7 @@ func NewRecursiveWatcher(name, command string) (*RecursiveWatcher, error) {
 		return nil, err
 	}
 
-	rw := &RecursiveWatcher{
-		Watcher: watcher,
-		Command: command,
-	}
+	rw.Watcher = watcher
 
 	for _, folder := range folders {
 		rw.AddFolder(folder)
@@ -115,7 +120,7 @@ func (watcher *RecursiveWatcher) Run() {
 						msg.Err("error: %s", err.Error())
 					} else if fi.IsDir() {
 						msg.Info("directory created: %s", event.Name)
-						if !ignoreFile(filepath.Base(event.Name)) {
+						if !watcher.IgnoreFile(filepath.Base(event.Name)) {
 							watcher.AddFolder(event.Name)
 						}
 					} else {
@@ -147,8 +152,13 @@ func (watcher *RecursiveWatcher) Run() {
 	}()
 }
 
+// Walker a file path walker
+type Walker struct {
+	IgnorePrefix string
+}
+
 // Subfolders returns a slice of subfolders (recursive), including the folder provided.
-func Subfolders(path string) (paths []string) {
+func (walker *Walker) Subfolders(path string) (paths []string) {
 	filepath.Walk(path, func(newPath string, info os.FileInfo, err error) error {
 		if err != nil {
 			msg.Err("error: %s", err.Error())
@@ -158,7 +168,7 @@ func Subfolders(path string) (paths []string) {
 		if info.IsDir() {
 			name := info.Name()
 			// skip folders that begin with a dot
-			if ignoreFile(name) && name != "." && name != ".." {
+			if walker.IgnoreFile(name) && name != "." && name != ".." {
 				return filepath.SkipDir
 			}
 			paths = append(paths, newPath)
@@ -168,7 +178,7 @@ func Subfolders(path string) (paths []string) {
 	return paths
 }
 
-// ignoreFile determines if a file should be ignored.
-func ignoreFile(name string) bool {
-	return strings.HasPrefix(name, ".")
+// IgnoreFile determines if a file should be ignored.
+func (walker *Walker) IgnoreFile(name string) bool {
+	return strings.HasPrefix(name, walker.IgnorePrefix)
 }
