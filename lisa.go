@@ -89,8 +89,8 @@ func commands() []cli.Command {
 		{
 			Name:        "watch",
 			ShortName:   "w",
-			Usage:       "Start the lisa watcher",
-			Description: "Start the lisa watcher",
+			Usage:       "Starting a file system watcher",
+			Description: "Starting a file system watcher then execute a command",
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "command, c",
@@ -98,13 +98,13 @@ func commands() []cli.Command {
 					Usage: "Execute the command when the directory files modified.",
 				},
 				cli.StringFlag{
-					Name:  "dir, d",
+					Name:  "path, p",
 					Value: "./",
-					Usage: "Watching the directory.",
+					Usage: "Watching the directory or file.",
 				},
 			},
 			Action: func(c *cli.Context) {
-				action.Watcher(c.String("command"), c.String("dir"))
+				action.Watcher(c.String("path"), c.String("command"))
 			},
 		},
 	}
