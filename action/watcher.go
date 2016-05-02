@@ -1,6 +1,7 @@
 package action
 
 import (
+	"bytes"
 	"errors"
 	"os"
 	"os/exec"
@@ -12,14 +13,42 @@ import (
 )
 
 // Watcher func
-func Watcher(name, command string) {
-	if command == "" {
-		msg.Info("lisa watching the path %s", name)
-	} else {
-		msg.Info("lisa watching the path %s then execute command: %s", name, command)
+func Watcher(name, event, command string) {
+	msg.Info("watching the path: %s", name)
+
+	events := strings.Split(strings.ToLower(event), ",")
+
+	ops := map[fsnotify.Op]bool{}
+
+	var buffer bytes.Buffer
+
+	for _, event := range events {
+		if strings.Contains("create,rename,write,remove,chmod", event) {
+			buffer.WriteString("," + event)
+			switch event {
+			case "create":
+				ops[fsnotify.Create] = true
+			case "rename":
+				ops[fsnotify.Rename] = true
+			case "write":
+				ops[fsnotify.Write] = true
+			case "remove":
+				ops[fsnotify.Remove] = true
+			case "chmod":
+				ops[fsnotify.Chmod] = true
+			}
+		}
 	}
 
-	if watcher, err := NewRecursiveWatcher(name, command); err != nil {
+	if len(ops) > 0 {
+		msg.Info("trigger events: %s", buffer.String()[1:])
+	}
+
+	if command != "" {
+		msg.Info("tirgger execute command: %s", command)
+	}
+
+	if watcher, err := NewRecursiveWatcher(name, command, ops); err != nil {
 		msg.Err(err.Error())
 	} else {
 		defer watcher.Close()
@@ -33,16 +62,18 @@ func Watcher(name, command string) {
 type RecursiveWatcher struct {
 	*fsnotify.Watcher
 	*Walker
-	Command string
+	TriggerOps map[fsnotify.Op]bool
+	Command    string
 }
 
 // NewRecursiveWatcher return a recursive watcher
-func NewRecursiveWatcher(name, command string) (*RecursiveWatcher, error) {
+func NewRecursiveWatcher(name, command string, ops map[fsnotify.Op]bool) (*RecursiveWatcher, error) {
 	rw := &RecursiveWatcher{
 		Command: command,
 		Walker: &Walker{
 			IgnorePrefix: ".",
 		},
+		TriggerOps: ops,
 	}
 
 	folders := []string{}
@@ -82,8 +113,8 @@ func (watcher *RecursiveWatcher) AddFolder(folder string) {
 	}
 }
 
-// execCommand execute the command
-func (watcher *RecursiveWatcher) execCommand() {
+// ExecCommand execute the command
+func (watcher *RecursiveWatcher) ExecCommand() {
 	if watcher.Command == "" {
 		return
 	}
@@ -115,7 +146,11 @@ func (watcher *RecursiveWatcher) Run() {
 		for {
 			select {
 			case event := <-watcher.Events:
-				if event.Op&fsnotify.Create == fsnotify.Create {
+				if watcher.IgnoreFile(event.Name) {
+					break
+				}
+
+				if watcher.TriggerOps[event.Op&fsnotify.Create] {
 					if fi, err := os.Stat(event.Name); err != nil {
 						msg.Err("error: %s", err.Error())
 					} else if fi.IsDir() {
@@ -125,28 +160,29 @@ func (watcher *RecursiveWatcher) Run() {
 						}
 					} else {
 						msg.Info("file created: %s", event.Name)
+						watcher.ExecCommand()
 					}
 				}
 
-				if event.Op&fsnotify.Remove == fsnotify.Remove {
+				if watcher.TriggerOps[event.Op&fsnotify.Remove] {
 					msg.Info("file remove: %s", event.Name)
+					watcher.ExecCommand()
 				}
 
-				if event.Op&fsnotify.Write == fsnotify.Write {
+				if watcher.TriggerOps[event.Op&fsnotify.Write] {
 					msg.Info("file modified: %s", event.Name)
+					watcher.ExecCommand()
 				}
 
-				if event.Op&fsnotify.Rename == fsnotify.Rename {
+				if watcher.TriggerOps[event.Op&fsnotify.Rename] {
 					msg.Info("file rename: %s", event.Name)
+					watcher.ExecCommand()
 				}
-				if event.Op&fsnotify.Chmod == fsnotify.Chmod {
+
+				if watcher.TriggerOps[event.Op&fsnotify.Chmod] {
 					msg.Info("file chmod: %s", event.Name)
+					watcher.ExecCommand()
 				}
-
-				if !watcher.IgnoreFile(event.Name) {
-					watcher.execCommand()
-				}
-
 			case err := <-watcher.Errors:
 				msg.Err("error: %s", err.Error())
 			}

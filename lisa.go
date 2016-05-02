@@ -102,9 +102,14 @@ func commands() []cli.Command {
 					Value: "./",
 					Usage: "Watching the directory or file.",
 				},
+				cli.StringFlag{
+					Name:  "event, e",
+					Value: "create,rename,write,remove",
+					Usage: "Execute the command when the events was trigger: create,rename,write,remove,chmod",
+				},
 			},
 			Action: func(c *cli.Context) {
-				action.Watcher(c.String("path"), c.String("command"))
+				action.Watcher(c.String("path"), c.String("event"), c.String("command"))
 			},
 		},
 	}
