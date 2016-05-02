@@ -143,7 +143,9 @@ func (watcher *RecursiveWatcher) Run() {
 					msg.Info("file chmod: %s", event.Name)
 				}
 
-				watcher.execCommand()
+				if !watcher.IgnoreFile(event.Name) {
+					watcher.execCommand()
+				}
 
 			case err := <-watcher.Errors:
 				msg.Err("error: %s", err.Error())
