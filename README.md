@@ -28,11 +28,11 @@ lisa s
 
 OPTIONS:
 
-flag   | short | default   | description
--------|-------|-----------|---------------------------------------------
---port | -p    | "8080"    | Serving Static Files with HTTP used port.  
---dir  | -d    | "./"      | Serving Static Files with HTTP in directory.  
---bind | -b    | "0.0.0.0" | Serving Static Files with HTTP bind address.  
+flag   | short | default | description
+-------|-------|---------|---------------------------------------------
+--port | -p    | 8080    | Serving Static Files with HTTP used port.  
+--dir  | -d    | ./      | Serving Static Files with HTTP in directory.  
+--bind | -b    | 0.0.0.0 | Serving Static Files with HTTP bind address.  
 
 run `lisa s -h` get more info
 
