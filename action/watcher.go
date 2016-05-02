@@ -3,6 +3,7 @@ package action
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -119,24 +120,29 @@ func (watcher *RecursiveWatcher) ExecCommand() {
 		return
 	}
 
-	cmd := exec.Command(watcher.Command)
+	ca := strings.Split(watcher.Command, " ")
 
-	msg.Info(strings.Join(cmd.Args, " "))
+	cmd := exec.Command(ca[0], ca[1:]...)
 
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		msg.Err(err.Error())
 	}
-	msg.Info(string(out))
 
-	if cmd.ProcessState != nil && cmd.ProcessState.Success() {
-		msg.Info("execute the command `%s` was PASS", watcher.Command)
-	} else {
-		msg.Info("execute the command `%s` was FAIL", watcher.Command)
+	if len(out) > 0 {
+		msg.Info("commend `%s` execute output logs:\n%s", watcher.Command, string(out))
 	}
 
+	var latency string
+
 	if cmd.ProcessState != nil {
-		msg.Info("execute the command latency (%.2f seconds)\n", cmd.ProcessState.UserTime().Seconds())
+		latency = fmt.Sprintf(", latency (%.2f seconds)\n", cmd.ProcessState.UserTime().Seconds())
+	}
+
+	if cmd.ProcessState != nil && cmd.ProcessState.Success() {
+		msg.Info("execute the command `%s` was PASS%s", watcher.Command, latency)
+	} else {
+		msg.Err("execute the command `%s` was FAIL%s", watcher.Command, latency)
 	}
 }
 
