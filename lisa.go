@@ -107,9 +107,14 @@ func commands() []cli.Command {
 					Value: "create,rename,write,remove",
 					Usage: "Execute the command when the events was trigger: create,rename,write,remove,chmod",
 				},
+				cli.IntFlag{
+					Name:  "delay, d",
+					Value: 1,
+					Usage: "Execute the command after a delay second.",
+				},
 			},
 			Action: func(c *cli.Context) {
-				action.Watcher(c.String("path"), c.String("event"), c.String("command"))
+				action.Watcher(c.String("path"), c.String("event"), c.String("command"), c.Int("delay"))
 			},
 		},
 	}
