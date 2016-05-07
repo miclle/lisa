@@ -72,11 +72,11 @@ type RecursiveWatcher struct {
 	*Walker
 	TriggerOps    map[fsnotify.Op]bool
 	Command       string
-	Delay         int
-	delayDuration time.Duration
 	ExecCommandAt time.Time
-	currentOpAt   time.Time
-	lastOpAt      time.Time
+	Delay         int
+
+	delayDuration time.Duration
+	timer         *time.Timer
 }
 
 // NewRecursiveWatcher return a recursive watcher
@@ -130,40 +130,23 @@ func (watcher *RecursiveWatcher) AddFolder(folder string) {
 
 // DelayExecCommand delay execute the watcher command
 func (watcher *RecursiveWatcher) DelayExecCommand() {
-	go func() {
-
-		for {
-
-			timer := time.NewTimer(time.Second)
-
-			duration := watcher.currentOpAt.Sub(watcher.lastOpAt)
-
-			// msg.Info("duration:%d, delayDuration:%d", duration, watcher.delayDuration)
-
-			if duration > watcher.delayDuration {
-
-				watcher.lastOpAt = watcher.currentOpAt
-
-				watcher.ExecCommand()
-
-			}
-
-			if watcher.lastOpAt != watcher.currentOpAt && time.Now().Sub(watcher.lastOpAt) > watcher.delayDuration {
-				watcher.lastOpAt = watcher.currentOpAt
-				watcher.ExecCommand()
-			}
-
-			<-timer.C
-		}
-	}()
+	if watcher.timer != nil {
+		watcher.timer.Stop()
+	}
+	watcher.timer = time.AfterFunc(watcher.delayDuration, func() {
+		watcher.ExecCommand()
+	})
 }
 
 // ExecCommand execute the command
 func (watcher *RecursiveWatcher) ExecCommand() {
+
 	if watcher.Command == "" {
 		msg.Info("watcher command is empty")
 		return
 	}
+
+	watcher.ExecCommandAt = time.Now()
 
 	ca := strings.Split(watcher.Command, " ")
 	cmd := exec.Command(ca[0], ca[1:]...)
