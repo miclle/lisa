@@ -8,13 +8,14 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/miclle/lisa/msg"
 )
 
 // Watcher func
-func Watcher(name, event, command string) {
+func Watcher(name, event, command string, delay int) {
 	msg.Info("watching the path: %s", name)
 
 	events := strings.Split(strings.ToLower(event), ",")
@@ -49,7 +50,13 @@ func Watcher(name, event, command string) {
 		msg.Info("tirgger execute command: %s", command)
 	}
 
-	if watcher, err := NewRecursiveWatcher(name, command, ops); err != nil {
+	if delay == 0 {
+		delay = 1
+	}
+
+	msg.Info("Execute the command after %d second.", delay)
+
+	if watcher, err := NewRecursiveWatcher(name, command, ops, delay); err != nil {
 		msg.Err(err.Error())
 	} else {
 		defer watcher.Close()
@@ -63,18 +70,25 @@ func Watcher(name, event, command string) {
 type RecursiveWatcher struct {
 	*fsnotify.Watcher
 	*Walker
-	TriggerOps map[fsnotify.Op]bool
-	Command    string
+	TriggerOps    map[fsnotify.Op]bool
+	Command       string
+	Delay         int
+	delayDuration time.Duration
+	ExecCommandAt time.Time
+	currentOpAt   time.Time
+	lastOpAt      time.Time
 }
 
 // NewRecursiveWatcher return a recursive watcher
-func NewRecursiveWatcher(name, command string, ops map[fsnotify.Op]bool) (*RecursiveWatcher, error) {
+func NewRecursiveWatcher(name, command string, ops map[fsnotify.Op]bool, delay int) (*RecursiveWatcher, error) {
 	rw := &RecursiveWatcher{
 		Command: command,
 		Walker: &Walker{
 			IgnorePrefix: ".",
 		},
-		TriggerOps: ops,
+		TriggerOps:    ops,
+		Delay:         delay,
+		delayDuration: time.Duration(delay) * time.Second,
 	}
 
 	folders := []string{}
@@ -114,14 +128,44 @@ func (watcher *RecursiveWatcher) AddFolder(folder string) {
 	}
 }
 
+// DelayExecCommand delay execute the watcher command
+func (watcher *RecursiveWatcher) DelayExecCommand() {
+	go func() {
+
+		for {
+
+			timer := time.NewTimer(time.Second)
+
+			duration := watcher.currentOpAt.Sub(watcher.lastOpAt)
+
+			// msg.Info("duration:%d, delayDuration:%d", duration, watcher.delayDuration)
+
+			if duration > watcher.delayDuration {
+
+				watcher.lastOpAt = watcher.currentOpAt
+
+				watcher.ExecCommand()
+
+			}
+
+			if watcher.lastOpAt != watcher.currentOpAt && time.Now().Sub(watcher.lastOpAt) > watcher.delayDuration {
+				watcher.lastOpAt = watcher.currentOpAt
+				watcher.ExecCommand()
+			}
+
+			<-timer.C
+		}
+	}()
+}
+
 // ExecCommand execute the command
 func (watcher *RecursiveWatcher) ExecCommand() {
 	if watcher.Command == "" {
+		msg.Info("watcher command is empty")
 		return
 	}
 
 	ca := strings.Split(watcher.Command, " ")
-
 	cmd := exec.Command(ca[0], ca[1:]...)
 
 	out, err := cmd.CombinedOutput()
@@ -166,28 +210,28 @@ func (watcher *RecursiveWatcher) Run() {
 						}
 					} else {
 						msg.Info("file created: %s", event.Name)
-						watcher.ExecCommand()
+						watcher.DelayExecCommand()
 					}
 				}
 
 				if watcher.TriggerOps[event.Op&fsnotify.Remove] {
 					msg.Info("file remove: %s", event.Name)
-					watcher.ExecCommand()
+					watcher.DelayExecCommand()
 				}
 
 				if watcher.TriggerOps[event.Op&fsnotify.Write] {
 					msg.Info("file modified: %s", event.Name)
-					watcher.ExecCommand()
+					watcher.DelayExecCommand()
 				}
 
 				if watcher.TriggerOps[event.Op&fsnotify.Rename] {
 					msg.Info("file rename: %s", event.Name)
-					watcher.ExecCommand()
+					watcher.DelayExecCommand()
 				}
 
 				if watcher.TriggerOps[event.Op&fsnotify.Chmod] {
 					msg.Info("file chmod: %s", event.Name)
-					watcher.ExecCommand()
+					watcher.DelayExecCommand()
 				}
 			case err := <-watcher.Errors:
 				msg.Err("error: %s", err.Error())
