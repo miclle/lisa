@@ -6,6 +6,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/miclle/lisa/action"
 	"github.com/miclle/lisa/msg"
+	"github.com/skratchdot/open-golang/open"
 )
 
 var version = "0.0.1-dev"
@@ -16,7 +17,7 @@ Usage: lisa COMMAND [ARGS]
 
 All commands can be run with -h (or --help) for more information.
 
-More info https://github.com/miclle/lisa
+More info http://miclle.me/lisa/
 `
 
 var authors = []cli.Author{
@@ -115,6 +116,13 @@ func commands() []cli.Command {
 			},
 			Action: func(c *cli.Context) {
 				action.Watcher(c.String("path"), c.String("event"), c.String("command"), c.Int("delay"))
+			},
+		},
+		{
+			Name:  "home",
+			Usage: "Go to the document website",
+			Action: func(c *cli.Context) {
+				open.Run("http://miclle.me/lisa/")
 			},
 		},
 	}
