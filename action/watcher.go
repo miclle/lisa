@@ -56,7 +56,7 @@ func Watcher(name, event, command string, delay int) {
 
 	msg.Info("Execute the command after %d second.", delay)
 
-	if watcher, err := NewRecursiveWatcher(name, command, ops, delay); err != nil {
+	if watcher, err := NewRecursiveWatcher(name, command, ops, time.Duration(delay)*time.Second); err != nil {
 		msg.Err(err.Error())
 	} else {
 		defer watcher.Close()
@@ -70,25 +70,23 @@ func Watcher(name, event, command string, delay int) {
 type RecursiveWatcher struct {
 	*fsnotify.Watcher
 	*Walker
+
 	TriggerOps    map[fsnotify.Op]bool
 	Command       string
 	ExecCommandAt time.Time
-	Delay         int
-
-	delayDuration time.Duration
+	Delay         time.Duration
 	timer         *time.Timer
 }
 
 // NewRecursiveWatcher return a recursive watcher
-func NewRecursiveWatcher(name, command string, ops map[fsnotify.Op]bool, delay int) (*RecursiveWatcher, error) {
+func NewRecursiveWatcher(name, command string, ops map[fsnotify.Op]bool, delay time.Duration) (*RecursiveWatcher, error) {
 	rw := &RecursiveWatcher{
 		Command: command,
 		Walker: &Walker{
 			IgnorePrefix: ".",
 		},
-		TriggerOps:    ops,
-		Delay:         delay,
-		delayDuration: time.Duration(delay) * time.Second,
+		TriggerOps: ops,
+		Delay:      delay,
 	}
 
 	folders := []string{}
@@ -133,7 +131,7 @@ func (watcher *RecursiveWatcher) DelayExecCommand() {
 	if watcher.timer != nil {
 		watcher.timer.Stop()
 	}
-	watcher.timer = time.AfterFunc(watcher.delayDuration, func() {
+	watcher.timer = time.AfterFunc(watcher.Delay, func() {
 		watcher.ExecCommand()
 	})
 }
