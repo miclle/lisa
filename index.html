@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640">
+
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Lisa by miclle</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/miclle/lisa">View on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Lisa</h1>
+            <h2>Lisa is a development tool for the Go Programming Language. It automatically runs your command and (will eventually) hot compile your code when it detects file system changes.</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/miclle/lisa/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/miclle/lisa/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
+
+
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
+        <h1>
+<a id="lisa" class="anchor" href="#lisa" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>lisa</h1>
+
+<p><a href="https://travis-ci.org/miclle/lisa"><img src="https://travis-ci.org/miclle/lisa.svg?branch=master" alt="Build Status"></a></p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Assuming you have a working Go environment and <code>GOPATH/bin</code> is in your <code>PATH</code>, <code>lisa</code> is a breeze to install:</p>
+
+<pre><code>go get github.com/miclle/lisa
+</code></pre>
+
+<p>Then verify that <code>lisa</code> was installed correctly:</p>
+
+<pre><code>lisa -h
+</code></pre>
+
+<h2>
+<a id="commands" class="anchor" href="#commands" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Commands</h2>
+
+<h3>
+<a id="server-s" class="anchor" href="#server-s" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>server, s</h3>
+
+<p>Serving Static Files with HTTP</p>
+
+<pre><code>lisa s
+</code></pre>
+
+<p>OPTIONS:</p>
+
+<table>
+<thead>
+<tr>
+<th>flag</th>
+<th>short</th>
+<th>default</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>--port</td>
+<td>-p</td>
+<td>8080</td>
+<td>Serving Static Files with HTTP used port.</td>
+</tr>
+<tr>
+<td>--dir</td>
+<td>-d</td>
+<td>./</td>
+<td>Serving Static Files with HTTP in directory.</td>
+</tr>
+<tr>
+<td>--bind</td>
+<td>-b</td>
+<td>0.0.0.0</td>
+<td>Serving Static Files with HTTP bind address.</td>
+</tr>
+</tbody>
+</table>
+
+<p>run <code>lisa s -h</code> get more info</p>
+
+<h3>
+<a id="watch-w" class="anchor" href="#watch-w" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>watch, w</h3>
+
+<p>Starting a file system watcher then execute a command</p>
+
+<pre><code>lisa w
+</code></pre>
+
+<p>OPTIONS:</p>
+
+<table>
+<thead>
+<tr>
+<th>flag</th>
+<th>short</th>
+<th>default</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>--command</td>
+<td>-c</td>
+<td></td>
+<td>Execute the command when the directory files modified.</td>
+</tr>
+<tr>
+<td>--path</td>
+<td>-p</td>
+<td>./</td>
+<td>Watching the directory or file.</td>
+</tr>
+<tr>
+<td>--event</td>
+<td>-e</td>
+<td>create,rename,write,remove</td>
+<td>Execute the command when the events was trigger: <br> create,rename,write,remove,chmod</td>
+</tr>
+<tr>
+<td>--delay</td>
+<td>-d</td>
+<td>1</td>
+<td>Execute the command after a delay second.</td>
+</tr>
+</tbody>
+</table>
+
+<p>run <code>lisa w -h</code> get more info</p>
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/miclle">miclle</a> can be found on <a href="https://github.com/miclle/lisa">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="https://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
