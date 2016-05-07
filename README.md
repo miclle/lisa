@@ -30,9 +30,9 @@ OPTIONS:
 
 flag   | short | default | description
 -------|-------|---------|---------------------------------------------
---port | -p    | 8080    | Serving Static Files with HTTP used port.  
---dir  | -d    | ./      | Serving Static Files with HTTP in directory.  
---bind | -b    | 0.0.0.0 | Serving Static Files with HTTP bind address.  
+--port | -p    | 8080    | Serving Static Files with HTTP used port.
+--dir  | -d    | ./      | Serving Static Files with HTTP in directory.
+--bind | -b    | 0.0.0.0 | Serving Static Files with HTTP bind address.
 
 run `lisa s -h` get more info
 
@@ -50,7 +50,7 @@ flag      | short | default | description
 ----------|-------|---------|---------------------------------------------
 --command | -c    | 			  | Execute the command when the directory files modified.
 --path    | -p    | ./      | Watching the directory or file.
---event   | -e    | create,rename,write,remove | Execute the command when the events was trigger: <br /> create,rename,write,remove,chmod  
-
+--event   | -e    | create,rename,write,remove | Execute the command when the events was trigger: <br /> create,rename,write,remove,chmod
+--delay   | -d    | 1       | Execute the command after a delay second.
 
 run `lisa w -h` get more info
