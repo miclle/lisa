@@ -2,6 +2,9 @@
 
 [![Build Status](https://travis-ci.org/miclle/lisa.svg?branch=master)](https://travis-ci.org/miclle/lisa)
 
+Lisa is a development tool for the Go Programming Language. It automatically runs your command and (will eventually) hot compile your code when it detects file system changes.
+http://miclle.me/lisa/
+
 ## Installation
 
 Assuming you have a working Go environment and `GOPATH/bin` is in your `PATH`, `lisa` is a breeze to install:
@@ -54,3 +57,11 @@ flag      | short | default | description
 --delay   | -d    | 1       | Execute the command after a delay second.
 
 run `lisa w -h` get more info
+
+### home
+
+Go to the document website
+
+```
+lisa home
+```
