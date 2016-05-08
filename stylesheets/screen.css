@@ -114,7 +114,7 @@ header, footer, section {
 
 div.shell {
   display: block;
-  width: 670px;
+  width: 800px;
   margin: 0 auto;
 }
 
@@ -140,7 +140,7 @@ header {
   position: relative;
   z-index: 2;
   margin: 0 auto;
-  max-width: 600px;
+  max-width: 800px;
   top: 38px;
 }
 
@@ -263,13 +263,14 @@ span.banner-fix {
   display: block;
   height: 19px;
   position: absolute;
-  width: 670px;
+  width: 800px;
   top: 19px;
+  z-index: 99;
 }
 
 section#main_content {
   z-index: 2;
-  padding: 20px 82px 0;
+  padding: 20px 62px 0;
   min-height:185px;
 }
 
@@ -279,7 +280,7 @@ footer {
   background: transparent url(../images/footer-ramp.jpg) center -1px no-repeat;
   padding-top: 104px;
   margin: -94px auto 40px;
-  max-width: 560px;
+  max-width: 760px;
   text-align: center;
 }
 
@@ -310,11 +311,12 @@ footer a {
 }
 
 footer span.ribbon-inner p {
+  padding-top:4px;
+  padding-bottom:4px;
   background-color: #7c334f;
   margin: 0;
   color: #e69b95;
   font: bold italic 12px/1 Georgia, Times, “Times New Roman”, serif;
-  padding-bottom:4px;
 }
 
 footer span.ribbon-inner a {
@@ -482,9 +484,13 @@ th {
   font-size: .85em;
 }
 
+thead tr th:first-child{
+  min-width: 80px;
+}
+
 td {
   display: table-cell;
-  padding: 0 .7em;
+  padding: 0.3em .7em;
   border: solid #ece4d8;
   border-width: 0 2px 2px 0;
 }
@@ -566,4 +572,8 @@ dd p:first-child {
   margin: .8em 0;
   font-size: .85em;
   font-style: italic;
+}
+
+#flags{
+  text-align: center;
 }
