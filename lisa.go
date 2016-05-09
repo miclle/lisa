@@ -9,7 +9,7 @@ import (
 	"github.com/skratchdot/open-golang/open"
 )
 
-var version = "0.0.1-dev"
+var version = "0.1.0"
 
 const usage = `A file watcher cli.
 
