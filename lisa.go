@@ -11,7 +11,9 @@ import (
 
 var version = "0.1.0"
 
-const usage = `A file watcher cli.
+const usage = `Lisa is a development tool for the Go Programming Language. 
+
+It automatically runs your command and hot compile your code when it detects file system changes.
 
 Usage: lisa COMMAND [ARGS]
 
