@@ -54,7 +54,7 @@ flag      | short | default | description
 --command | -c    | 			  | Execute the command when the directory files modified.
 --path    | -p    | ./      | Watching the directory or file.
 --event   | -e    | create,rename,write,remove | Execute the command when the events was trigger: <br /> create,rename,write,remove,chmod
---delay   | -d    | 1       | Execute the command after a delay second.
+--delay   | -d    | 1000    | Execute the command after the number of milliseconds.
 
 run `lisa w -h` get more info
 

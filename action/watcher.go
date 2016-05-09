@@ -56,7 +56,7 @@ func Watcher(name, event, command string, delay int) {
 
 	msg.Info("Execute the command after %d second.", delay)
 
-	if watcher, err := NewRecursiveWatcher(name, command, ops, time.Duration(delay)*time.Second); err != nil {
+	if watcher, err := NewRecursiveWatcher(name, command, ops, time.Duration(delay)*time.Millisecond); err != nil {
 		msg.Err(err.Error())
 	} else {
 		defer watcher.Close()
@@ -121,8 +121,6 @@ func (watcher *RecursiveWatcher) AddFolder(folder string) {
 	err := watcher.Add(folder)
 	if err != nil {
 		msg.Err("Error watching: %s, %s", folder, err.Error())
-	} else {
-		msg.Info("Lisa watching: %s", folder)
 	}
 }
 

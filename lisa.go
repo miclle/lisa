@@ -110,8 +110,8 @@ func commands() []cli.Command {
 				},
 				cli.IntFlag{
 					Name:  "delay, d",
-					Value: 1,
-					Usage: "Execute the command after a delay second.",
+					Value: 1000,
+					Usage: "Execute the command after the number of milliseconds.",
 				},
 			},
 			Action: func(c *cli.Context) {
