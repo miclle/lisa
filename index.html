@@ -15,37 +15,36 @@
   <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
   <script type="text/javascript">
     $(document).ready(function () {
-        $('#main_content').headsmart()
-      })
+      $('#main_content').headsmart()
+    })
   </script>
   <title>Lisa by miclle</title>
 </head>
 
 <body>
   <a id="forkme_banner" href="https://github.com/miclle/lisa">View on GitHub</a>
+
   <div class="shell">
 
     <header>
       <span class="ribbon-outer">
-          <span class="ribbon-inner">
-            <h1>Lisa</h1>
-            <h2>Lisa is a development tool for the Go Programming Language. It automatically runs your command and hot compile your code when it detects file system changes.</h2>
-          </span>
-      <span class="left-tail"></span>
-      <span class="right-tail"></span>
+        <span class="ribbon-inner">
+          <h1>Lisa</h1>
+          <h2>Lisa is a development tool for the Go Programming Language. It automatically runs your command and hot compile your code when it detects file system changes.</h2>
+        </span>
+        <span class="left-tail"></span>
+        <span class="right-tail"></span>
       </span>
     </header>
 
     <section id="downloads">
       <span class="inner">
-          <a href="https://github.com/miclle/lisa/zipball/master" class="zip"><em>download</em> .ZIP</a>
-          <a href="https://github.com/miclle/lisa/tarball/master" class="tgz"><em>download</em> .TGZ</a>
-        </span>
+        <a href="https://github.com/miclle/lisa/zipball/master" class="zip"><em>download</em> .ZIP</a>
+        <a href="https://github.com/miclle/lisa/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+      </span>
     </section>
 
-
     <span class="banner-fix"></span>
-
 
     <section id="main_content">
       <h1>
@@ -56,28 +55,29 @@
         <a href="https://travis-ci.org/miclle/lisa"><img src="https://travis-ci.org/miclle/lisa.svg?branch=master" alt="Build Status"></a>
       </p>
 
-      <h2><a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+      <h2>
+        <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation
+      </h2>
 
       <p>Assuming you have a working Go environment and <code>GOPATH/bin</code> is in your <code>PATH</code>, <code>lisa</code>        is a breeze to install:</p>
 
-      <pre><code>go get github.com/miclle/lisa
-</code></pre>
+      <pre><code>go get github.com/miclle/lisa</code></pre>
 
       <p>Then verify that <code>lisa</code> was installed correctly:</p>
 
-      <pre><code>lisa -h
-</code></pre>
+      <pre><code>lisa -h</code></pre>
 
       <h2>
-<a id="commands" class="anchor" href="#commands" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Commands</h2>
+        <a id="commands" class="anchor" href="#commands" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Commands
+      </h2>
 
       <h3>
-<a id="server-s" class="anchor" href="#server-s" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>server, s</h3>
+        <a id="server-s" class="anchor" href="#server-s" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>server, s
+      </h3>
 
       <p>Serving Static Files with HTTP</p>
 
-      <pre><code>lisa s
-</code></pre>
+      <pre><code>lisa s</code></pre>
 
       <p>OPTIONS:</p>
 
@@ -115,12 +115,12 @@
       <p>run <code>lisa s -h</code> get more info</p>
 
       <h3>
-<a id="watch-w" class="anchor" href="#watch-w" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>watch, w</h3>
+        <a id="watch-w" class="anchor" href="#watch-w" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>watch, w
+      </h3>
 
       <p>Starting a file system watcher then execute a command</p>
 
-      <pre><code>lisa w
-</code></pre>
+      <pre><code>lisa w</code></pre>
 
       <p>OPTIONS:</p>
 
@@ -155,28 +155,26 @@
           <tr>
             <td>--delay</td>
             <td>-d</td>
-            <td>1</td>
-            <td>Execute the command after a delay second.</td>
+            <td>1000</td>
+            <td>Execute the command after the number of milliseconds.</td>
           </tr>
         </tbody>
       </table>
 
       <p>run <code>lisa w -h</code> get more info</p>
 
-      <h3>
-<a id="home" class="anchor" href="#home" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>home</h3>
+      <h3><a id="home" class="anchor" href="#home" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>home</h3>
 
       <p>Go to the document website</p>
 
-      <pre><code>lisa home
-</code></pre>
+      <pre><code>lisa home</code></pre>
     </section>
 
     <footer>
       <span class="ribbon-outer">
-          <span class="ribbon-inner">
-            <p>this project by <a href="https://github.com/miclle">miclle</a> can be found on <a href="https://github.com/miclle/lisa">GitHub</a></p>
-          </span>
+        <span class="ribbon-inner">
+          <p>this project by <a href="https://github.com/miclle">miclle</a> can be found on <a href="https://github.com/miclle/lisa">GitHub</a></p>
+        </span>
       <span class="left-tail"></span>
       <span class="right-tail"></span>
       </span>
@@ -186,7 +184,5 @@
 
   </div>
 
-
 </body>
-
 </html>
