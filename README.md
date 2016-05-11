@@ -1,6 +1,7 @@
 # lisa
 
 [![Build Status](https://travis-ci.org/miclle/lisa.svg?branch=master)](https://travis-ci.org/miclle/lisa)
+[![Go Report Card](https://goreportcard.com/badge/github.com/miclle/lisa)](https://goreportcard.com/report/github.com/miclle/lisa)
 
 Lisa is a development tool for the Go Programming Language. It automatically runs your command when it detects file system changes.
 http://miclle.me/lisa/
