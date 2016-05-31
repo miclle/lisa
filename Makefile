@@ -3,6 +3,7 @@ VERSION := $(shell git describe --tags)
 DIST_DIRS := find * -type d -exec
 
 build:
+	${LISA_GO_EXECUTABLE} get ./...
 	${LISA_GO_EXECUTABLE} build -o lisa -ldflags "-X main.version=${VERSION}" lisa.go
 
 install: build
